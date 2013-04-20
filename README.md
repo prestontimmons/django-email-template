@@ -37,3 +37,18 @@ def myview(request):
     send("myemail.html", dict(name=name), request=request)
     return HttpResponse("ok")
 ```
+
+
+## Install:
+
+Install using pip:
+
+```
+pip install django-email-template
+```
+
+Install from github:
+
+```
+pip install git+git@github.com:prestontimmons/django-email-template.git#egg=email-template
+```
