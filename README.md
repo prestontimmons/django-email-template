@@ -50,5 +50,5 @@ pip install django-email-template
 Install from github:
 
 ```
-pip install git+git@github.com:prestontimmons/django-email-template.git#egg=email-template
+pip install -e git+git://github.com/prestontimmons/django-email-template.git#egg=email-template
 ```
