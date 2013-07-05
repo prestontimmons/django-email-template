@@ -21,6 +21,19 @@ EMAIL = Template("""
 {% block recipients %}x@z.com, y@z.com{% endblock %}
 """)
 
+HTML_EMAIL = Template("""
+{% block subject %}Subject{% endblock %}
+{% block html %}Hello from {{ name }}{% endblock %}
+{% block recipients %}x@z.com, y@z.com{% endblock %}
+""")
+
+MULTI_EMAIL = Template("""
+{% block subject %}Subject{% endblock %}
+{% block text %}Hello from {{ name }}{% endblock %}
+{% block html %}Hello from {{ name }}{% endblock %}
+{% block recipients %}x@z.com, y@z.com{% endblock %}
+""")
+
 MISSING = Template("""
 {% block recipients %}x@z.com, y@z.com{% endblock %}
 """)
@@ -60,7 +73,7 @@ class SendBaseTest(TestCase):
             )
         )
 
-        self.assertEqual(message["message"], "Hello from Y")
+        self.assertEqual(message["text"], "Hello from Y")
         self.assertEqual(message["subject"], "Subject")
         self.assertEqual(message["recipient_list"], ["x@z.com", "y@z.com"])
         self.assertEqual(message["from_email"], "x@y.com")
@@ -74,7 +87,7 @@ class SendBaseTest(TestCase):
             send_method=send_method,
         )
 
-        self.assertEqual(message["message"], "Hello from Y")
+        self.assertEqual(message["text"], "Hello from Y")
         self.assertEqual(message["subject"], "Subject")
         self.assertEqual(message["recipient_list"], ["x@z.com", "y@z.com"])
 
@@ -85,7 +98,7 @@ class SendBaseTest(TestCase):
             request=RequestFactory().post("/email/"),
         )
 
-        self.assertEqual(message["message"], "")
+        self.assertEqual(message["text"], "")
         self.assertEqual(message["subject"], "")
         self.assertEqual(message["recipient_list"], ["x@z.com", "y@z.com"])
 
@@ -95,19 +108,50 @@ class SendDjangoTest(TestCase):
     def setUp(self):
         templates = {
             "email.html": EMAIL,
+            "html-email.html": HTML_EMAIL,
+            "multi-email.html": MULTI_EMAIL,
         }
         setup_test_template_loader(templates)
 
     def tearDown(self):
         restore_template_loaders()
 
-    def test_send_django(self):
+    def test_text(self):
         message = send_django(
             template_name="email.html",
             context_data=dict(name="Y"),
             request=None,
             from_email="x@y.com",
-            header=2,
         )
 
-        self.assertEqual(message, 1)
+        self.assertEqual(message.content_subtype, "plain")
+        self.assertEqual(message.body, "Hello from Y")
+        self.assertEqual(message.from_email, "x@y.com")
+        self.assertEqual(message.subject, "Subject")
+        self.assertEqual(message.to, ["x@z.com", "y@z.com"])
+
+    def test_html(self):
+        message = send_django(
+            template_name="html-email.html",
+            context_data=dict(name="Y"),
+            request=None,
+            from_email="x@y.com",
+        )
+
+        self.assertEqual(message.content_subtype, "html")
+        self.assertEqual(message.body, "Hello from Y")
+
+    def test_multi(self):
+        message = send_django(
+            template_name="multi-email.html",
+            context_data=dict(name="Y"),
+            request=None,
+            from_email="x@y.com",
+        )
+
+        self.assertEqual(message.content_subtype, "plain")
+        self.assertEqual(message.body, "Hello from Y")
+        self.assertEqual(
+            message.alternatives,
+            [("Hello from Y", "text/html")],
+        )
