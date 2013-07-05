@@ -8,7 +8,7 @@ from django.conf import settings
 
 if not settings.configured:
     settings_dict = dict(
-        INSTALLED_APPS=["test_email_template"],
+        INSTALLED_APPS=["email_template_tests"],
         DATABASES={
             "default": {
                 "ENGINE": "django.db.backends.sqlite3",
@@ -33,7 +33,7 @@ def runtests(test_labels):
 
 if __name__ == "__main__":
     labels = sys.argv[1:] or [
-        "test_email_template",
+        "email_template_tests",
     ]
 
     runtests(labels)
