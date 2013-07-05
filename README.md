@@ -1,4 +1,4 @@
-# Send emails based on a Django template
+# Send emails with Django templates
 
 ## Usage:
 
@@ -22,8 +22,11 @@ from email_template.email import send
 send("myemail.html", dict(name=name))
 ```
 
-This will use `django.core.mail.send_mail` to send the email to the
-specified recipients.
+This will send a `text/plain` email message using
+`django.core.mail.EmailMessage` to the specified recipients.
+
+You can optionally add an `html` block to send a multipart email, or
+specify the `html` block only, which sends a `text/html` email.
 
 
 **Providing a request context**
