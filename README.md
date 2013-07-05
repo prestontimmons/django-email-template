@@ -55,3 +55,7 @@ Install from github:
 ```
 pip install -e git+git://github.com/prestontimmons/django-email-template.git#egg=email-template
 ```
+
+## Running tests
+
+Use the runtests.py command in the `tests` directory.
