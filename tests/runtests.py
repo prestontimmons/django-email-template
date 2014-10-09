@@ -14,16 +14,22 @@ if not settings.configured:
                 "ENGINE": "django.db.backends.sqlite3",
             },
         },
+        SILENCED_SYSTEM_CHECKS=["1_7.W001"],
     )
 
     settings.configure(**settings_dict)
 
 
+import django
+if django.VERSION[:2] >= (1, 7):
+    django.setup()
+
+
 def runtests(test_labels):
     sys.path.insert(0, dirname(abspath(__file__)))
 
-    from django.test.simple import DjangoTestSuiteRunner
-    failures = DjangoTestSuiteRunner(
+    from django.test.runner import DiscoverRunner
+    failures = DiscoverRunner(
         verbosity=1,
         interactive=True,
         failfast=False,
