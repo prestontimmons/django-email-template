@@ -3,7 +3,7 @@ from functools import partial
 from django.conf import settings
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template import Context, RequestContext
-from django.template.loader import get_template
+from django.template.loader import select_template
 
 from .util import render_node
 
@@ -34,7 +34,10 @@ def get_message(template_name, context_data, request, render_method):
     else:
         c = Context(context_data)
 
-    template = get_template(template_name)
+    if not isinstance(template_name, (list, tuple)):
+        template_name = [template_name]
+
+    template = select_template(template_name)
     return render_method(template, c)
 
 
