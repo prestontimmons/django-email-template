@@ -9,7 +9,7 @@ from .util import render_node
 
 
 def send_base(template_name, context_data, send_method, render_method,
-        request=None, from_email=None, send_method_args=None, **kwargs):
+              request=None, from_email=None, send_method_args=None, **kwargs):
 
     send_method_args = send_method_args or {}
 
