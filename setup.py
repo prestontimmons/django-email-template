@@ -11,7 +11,7 @@ https://github.com/prestontimmons/django-email-template
 
 setup(
     name="django-email-template",
-    version="1.0.1",
+    version="1.0.2",
     description="Send emails based on a Django template",
     long_description=DESCRIPTION,
     packages=find_packages(),
